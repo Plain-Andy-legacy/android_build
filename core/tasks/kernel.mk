@@ -155,7 +155,11 @@ ifeq ($(TARGET_ARCH),arm)
         ifeq ($(HOST_OS),darwin)
             ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/darwin-x86/toolchain/$(TARGET_GCC_VERSION_ARM)/bin/arm-eabi-"
         else
-            ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/toolchain/$(TARGET_GCC_VERSION_ARM)/bin/arm-eabi-"
+            ifneq ($(TARGET_KERNEL_TC_SUFFIX),)
+                ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/$(TARGET_GCC_VERSION_ARM)/bin/arm-eabi-"
+            else
+                ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/$(TARGET_GCC_VERSION_ARM)/bin/$(TARGET_KERNEL_TC_SUFFIX)"
+            endif
         endif
     else
         ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ARM_EABI_TOOLCHAIN)/arm-eabi-"
