@@ -1672,7 +1672,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
 	   CUSTOM_BOOTING_MK=$(BOARD_CUSTOM_BOOTIMG_MK) \
 	   $(OTA_FROM_TARGET_SCRIPT) -v \
-	   $(if $(PLAIN_PRODUCT), --block) \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
@@ -1709,30 +1708,30 @@ AROMA_ZIP_SCRIPT := ./build/tools/releasetools/aroma_zip_script.sh
 AROMA_VENDOR_CONFIG := build/tools/releasetools/aroma/aromazip-config
 AROMA_VENDOR_SCRIPT := build/tools/releasetools/aroma/aromazip-script
 AROMA_VENDOR_TWEAKS := vendor/plain/prebuilt/bin/plaintweak
-AROMA_ZIP_OUT_FILE := Plain-Andy-$(TARGET_DEVICE)-AromaInstaller
+AROMA_ZIP_OUT_FILE := BuildPropTweaks-AromaInstaller-$(TARGET_DEVICE)
 AROMA_DEVICE := "$(PRODUCT_MANUFACTURER) $(PRODUCT_BRAND) $(PRODUCT_MODEL)"
-ifdef AROMA_DEVICE_CONFIG
-aromazip := $(AROMA_ZIP_SCRIPT) \
-	   $(TARGET_DEVICE) \
-	   $(AROMA_VENDOR_CONFIG) \
-	   $(AROMA_VENDOR_SCRIPT) \
-	   $(AROMA_ZIP_OUT_FILE) \
-	   $(AROMA_VENDOR_TWEAKS) \
-	   $(AROMA_DEVICE_CONFIG) \
-	   $(AROMA_DEVICE_SCRIPT) \
-	   $(AROMA_DEVICE_FILES)
-else
-aromazip := $(AROMA_ZIP_SCRIPT) \
-	   $(TARGET_DEVICE) \
-	   $(AROMA_VENDOR_CONFIG) \
-	   $(AROMA_VENDOR_SCRIPT) \
-	   $(AROMA_ZIP_OUT_FILE) \
-	   $(AROMA_VENDOR_TWEAKS)
-endif
-
+ifneq ($(AROMA_DEVICE_CONFIG),)
 .PHONY: aromazip
 aromazip: nothing
-	$(aromazip)
+	   $(AROMA_ZIP_SCRIPT) \
+	   "yes" \
+	   "$(TARGET_DEVICE)" \
+	   "$(AROMA_VENDOR_CONFIG)" \
+	   "$(AROMA_VENDOR_SCRIPT)" \
+	   "$(AROMA_ZIP_OUT_FILE)" \
+	   "$(AROMA_VENDOR_TWEAKS)" \
+	   "$(AROMA_DEVICE_CONFIG)" \
+	   "$(AROMA_DEVICE_SCRIPT)" \
+	   "$(AROMA_DEVICE_FILES)"
+else
+aromazip: nothing
+	   $(AROMA_ZIP_SCRIPT) \
+	   "$(TARGET_DEVICE)" \
+	   "$(AROMA_VENDOR_CONFIG)" \
+	   "$(AROMA_VENDOR_SCRIPT)" \
+	   "$(AROMA_ZIP_OUT_FILE)" \
+	   "$(AROMA_VENDOR_TWEAKS)"
+endif
 
 # -----------------------------------------------------------------
 # The update package

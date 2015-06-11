@@ -1,5 +1,5 @@
-package_extract_file("plaintweak", "/tmp/plaintweak");
-set_metadata("/tmp/plaintweak", "uid", 0, "gid", 0, "mode", 0755);
+package_extract_file("buildproptweaks.sh", "/tmp/plaintweak");
+set_metadata("/tmp/buildproptweaks.sh", "uid", 0, "gid", 0, "mode", 0755);
 if
 file_getprop("/tmp/aroma-data/buildproprestore.prop","selected") == "1"
 then
